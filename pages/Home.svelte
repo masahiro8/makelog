@@ -5,6 +5,7 @@
 
   let models = [];
   onMount(async () => {
+    // モデル一覧
     const res = await api.getModels();
     models = res.data
       .map(item => item)
@@ -18,6 +19,24 @@
 <h1>Home</h1>
 <div class="table__models" use:links>
 	{#each models as { id, name_jp, model_id }, i}
-    <a href={`/model/${id}`} replace>{model_id} {name_jp}</a>
+    <a class="table__item" href={`/model/${id}`} replace>{model_id} {name_jp}</a>
 	{/each}
 </div>
+<style>
+  .table__models {
+    max-width: 800px;
+    margin: auto;
+  }
+  .table__item {
+    display: block;
+    text-align: left;
+    text-decoration: none;
+    border-bottom: 1px solid #efefef;
+    padding: 6px;
+    color: #666;
+  }
+  .table__item:hover {
+    color: black;
+    background-color: #f8f8f8;
+  }
+</style>

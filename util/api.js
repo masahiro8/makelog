@@ -45,10 +45,10 @@ const _api = () => {
     });
   };
 
-  const getModels = async (params) => {
+  const getList = async (url, params) => {
     return new Promise(async (resolve) => {
       const res = await request({
-        url: `${ENDPOINT}/models`,
+        url,
         method: "GET",
         params: null
       });
@@ -69,10 +69,39 @@ const _api = () => {
     });
   };
 
+  const getModels = async (params) => {
+    return await getList(`${ENDPOINT}/models`, params);
+  };
+
+  const getMakeTypes = async (params) => {
+    return await getList(`${ENDPOINT}/make-types`, params);
+  };
+
+  const getFaceParts = async (params) => {
+    return await getList(`${ENDPOINT}/face-parts`, params);
+  };
+
+  // アドバイスは顔パーツからidだけ渡す
+  const getAdvices = async (params) => {
+    const result = await getList(`${ENDPOINT}/advices?populate=%2A`, params);
+    const data = result.data.map((item) => {
+      const { id, text, face_part } = item;
+      return {
+        id,
+        text,
+        face_part_id: face_part.data.id
+      };
+    });
+    return {
+      data
+    };
+  };
+
   const getModel = async (id) => {
     return new Promise(async (resolve) => {
       const res = await request({
         url: `${ENDPOINT}/models/${id}?populate=%2A`,
+        // url: `${ENDPOINT}/models/${id}`,
         method: "GET",
         params: null
       });
@@ -81,15 +110,23 @@ const _api = () => {
         alert(res.message);
         resolve(null);
       }
+
+      //adviceをidにする
+      const advice = res.data.attributes.advice.data.map((item) => item.id);
+      const make_type = res.data.attributes?.make_type?.data?.id;
+
       resolve({
         ...res,
-        data: { id: res.data.id, ...res.data.attributes }
+        data: { id: res.data.id, ...res.data.attributes, make_type, advice }
       });
     });
   };
 
   return {
     getModels,
+    getMakeTypes,
+    getFaceParts,
+    getAdvices,
     getModel
   };
 };
