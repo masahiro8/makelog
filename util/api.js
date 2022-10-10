@@ -122,12 +122,39 @@ const _api = () => {
     });
   };
 
+  const updateModel = (params) => {
+    let { advice, make_type, model_id, name_en, name_jp } = params;
+    console.log({ advice, make_type, model_id, name_en, name_jp });
+    fetch(`${ENDPOINT}/models/${params.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        data: {
+          advice: advice.filter((item) => {
+            return item;
+          }),
+          make_type,
+          model_id,
+          name_en,
+          name_jp
+        }
+      })
+    })
+      .then((response) => response.text())
+      .then((data) => {
+        console.log(data);
+      });
+  };
+
   return {
     getModels,
     getMakeTypes,
     getFaceParts,
     getAdvices,
-    getModel
+    getModel,
+    updateModel
   };
 };
 

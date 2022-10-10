@@ -24,6 +24,13 @@
       ...res.data
     };
     console.log(_model);
+    let n = 0;
+    facePartsAdvice = facePartsAdvice.map(item => {
+      const r = res.data.advice[n] ? res.data.advice[n] : 0;
+      n++;
+      return r;
+    });
+    console.log(facePartsAdvice);
   });
 
   const getAdviceLimitBy = facePartsId => {
@@ -42,6 +49,7 @@
   };
 
   const submit = () => {
+    api.updateModel(_model);
     console.log(_model);
   };
 </script>
